@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environment
+venv_dissertation_transcriber/
+
+# PyInstaller
+*.spec
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+*.out
+*.err
+
+# Transcription outputs
+transcriptions/
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+Thumbs.db
+desktop.ini
+
+# Test audio files
+test.mp3
+small_test.mp3
