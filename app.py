@@ -19,7 +19,7 @@ MEDIA_EXTS = {
 
 WHISPER_MODELS = { 'tiny', 'base', 'small', 'medium'}
 
-def slow_type(text, delay=0.05):
+def slow_type(text, delay=0.01):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
@@ -57,11 +57,11 @@ def main():
         while True:
             # Print model info for non-technical users
             print()
-            slow_type("Model Information:")
-            slow_type("  tiny: Fastest but least accurate")
-            slow_type("  base: Balanced speed and accuracy")
-            slow_type("  small: Slower but more accurate")
-            slow_type("  medium: Slowest but most accurate")
+            print("Model Information:")
+            print("  tiny: Fastest but least accurate")
+            print("  base: Balanced speed and accuracy")
+            print("  small: Slower but more accurate")
+            print("  medium: Slowest but most accurate")
             print()
             model_choice = input(f"Choose Whisper model {WHISPER_MODELS} (default: base): ").strip().lower()
             if model_choice == '':

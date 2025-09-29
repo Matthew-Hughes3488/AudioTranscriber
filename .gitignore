@@ -15,6 +15,7 @@ dist/
 
 # Virtual environment
 venv_dissertation_transcriber/
+venv_audio/
 
 # PyInstaller
 *.spec
@@ -45,3 +46,6 @@ desktop.ini
 # Test audio files
 test.mp3
 small_test.mp3
+
+# Additional test audio files
+The War On Normal Guys.mp3
