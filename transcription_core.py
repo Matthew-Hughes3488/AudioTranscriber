@@ -23,8 +23,21 @@ def setup_ffmpeg_path():
                 os.environ["PATH"] = ffmpeg_dir + os.pathsep + current_path
 
 
-# Set up ffmpeg path early
+def setup_whisper_assets():
+    """Set up Whisper assets path for PyInstaller bundle."""
+    if getattr(sys, 'frozen', False):  # Running in a PyInstaller bundle
+        # Check both possible directory names (assets or assetsclear due to PyInstaller issue)
+        for assets_dir in ["assets", "assetsclear"]:
+            whisper_assets_path = os.path.join(sys._MEIPASS, "whisper", assets_dir)
+            if os.path.exists(whisper_assets_path):
+                # Simply set the environment variable that Whisper checks
+                os.environ["WHISPER_ASSETS"] = whisper_assets_path
+                break
+
+
+# Set up paths early
 setup_ffmpeg_path()
+setup_whisper_assets()
 
 
 # Import whisper and audio_transcriber only when needed
