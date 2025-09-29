@@ -1,56 +1,97 @@
-# Building Audio Transcriber .app for macOS
+# Building Audio Transcriber for Distribution
+
+The Audio Transcriber now supports both GUI and CLI modes, making it even more user-friendly!
+
+## New Dual-Mode Architecture
+
+The app has been refactored into several components:
+- `app.py` - Main entry point (supports `--gui`, `--cli`, `--help`)
+- `gui_app.py` - Friendly GUI interface (default)
+- `cli_app.py` - Command line interface  
+- `transcription_core.py` - Shared transcription logic
 
 ## Prerequisites
-1. Install PyInstaller in your virtual environment:
+
+1. Install PyInstaller and dependencies:
    ```bash
    source venv_dissertation_transcriber/bin/activate
-   pip install pyinstaller
+   pip install -r requirements.txt
    ```
 
-## Building the .app
+## Building Options
 
-1. Activate your virtual environment:
-   ```bash
-   source venv_dissertation_transcriber/bin/activate
-   ```
+### Option 1: GUI Mode (Recommended for End Users)
+Build with GUI as the default interface:
 
-2. Build the .app using the spec file:
-   ```bash
-   pyinstaller AudioTranscriber.spec
-   ```
+```bash
+# Build GUI version
+pyinstaller --onefile --windowed --name "Audio Transcriber GUI" app.py
+```
 
-3. The .app will be created in the `dist/` folder as `Audio Transcriber.app`
+### Option 2: CLI Mode (For Power Users) 
+Build with CLI interface only:
 
-## Code Changes Made for .app Distribution
+```bash
+# Build CLI version
+pyinstaller --onefile --name "Audio Transcriber CLI" cli_app.py
+```
 
-The following changes were made to ensure the app works correctly when distributed as a .app:
+### Option 3: Universal Build (Both Modes)
+Build with both GUI and CLI support:
 
-1. **Directory Detection**: The app now detects if it's running as a PyInstaller bundle and looks for audio files in the user's current working directory (where they double-clicked the .app)
+```bash
+# Build universal version
+pyinstaller --onefile --name "Audio Transcriber" app.py
+```
 
-2. **User Feedback**: Added clear messages showing where the app is looking for files and prompting the user before starting
+## Updated Usage for End Users
 
-3. **Error Handling**: Better error messages if no files are found
+### GUI Mode (Default)
+1. Double-click `Audio Transcriber` (or `Audio Transcriber.exe` on Windows)
+2. The friendly GUI interface will appear
+3. Use the "Choose Files" or "Find Files in Folder" buttons
+4. Select your transcription model
+5. Click "Start Transcription"
+6. Watch the progress and find results in the `transcriptions` folder
 
-4. **Console Output**: The app keeps the console window open so users can see progress and results
+### CLI Mode
+1. Run with `--cli` flag: `./Audio\ Transcriber --cli`
+2. Or use the dedicated CLI build
+3. Follow the original command-line interface
 
-## Usage for End Users
+### Help
+Run `./Audio\ Transcriber --help` to see all options
 
-1. Put the `Audio Transcriber.app` in any folder
-2. Put audio/video files in the same folder as the .app
-3. Double-click `Audio Transcriber.app`
-4. Follow the on-screen prompts
-5. Transcription files will be saved in the same folder
+## Key Improvements
 
-## Notes
+- **Dual Interface**: GUI for non-technical users, CLI for power users
+- **Smart Fallback**: Automatically falls back to CLI if GUI unavailable  
+- **Better UX**: Warm, friendly interface with clear progress tracking
+- **File Management**: Easy file selection with drag-and-drop support
+- **Error Handling**: Friendly error messages instead of technical errors
+- **Progress Tracking**: Real-time updates during transcription
 
-- The .app includes all dependencies (Whisper, PyTorch, etc.)
-- The first run may be slower as it loads the AI model
-- Users don't need Python or any technical setup
-- The app will show a console window with progress information
-- Transcription files are saved as `[filename]_transcription.txt` in the same folder as the audio files
+## Distribution Notes
+
+- **GUI Version**: Perfect for non-technical end users
+- **File Size**: Expect 2-5GB due to AI models and dependencies
+- **Cross-Platform**: Works on Mac, Windows, Linux
+- **Dependencies**: All included in the executable
+- **First Run**: May be slower while downloading/caching models
 
 ## Troubleshooting
 
-- If the .app doesn't run, users may need to right-click and select "Open" the first time (macOS security)
-- The .app file will be quite large (several GB) due to the included AI models and PyTorch dependencies
-- Consider using the "base" model instead of "tiny" for better accuracy, or "large" for best accuracy (but larger file size)
+### "GUI won't start"
+- Try CLI mode: `./Audio\ Transcriber --cli` 
+- Check that tkinter is available on the target system
+
+### "No display available"
+- The app will automatically fall back to CLI mode on headless systems
+
+### Performance Issues  
+- GUI mode uses threading to prevent interface freezing
+- CLI mode processes files sequentially for simpler debugging
+
+---
+
+*The GUI makes this tool perfect for non-technical users while maintaining all the power of the original CLI!*

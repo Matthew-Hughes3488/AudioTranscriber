@@ -1,125 +1,110 @@
-import whisper
-import os
+"""
+Audio Transcriber - Unified Entry Point
+Supports both GUI and CLI modes for audio/video transcription using OpenAI Whisper.
+
+Usage:
+  python app.py           # Launch GUI mode (default)
+  python app.py --gui     # Launch GUI mode explicitly  
+  python app.py --cli     # Launch CLI mode
+  python app.py --help    # Show help
+"""
+
 import sys
-import multiprocessing
-from audio_transcriber import transcribe_with_retry
-import time
+import os
+import argparse
 
 
-# Force unbuffered output for stdout and stderr
-os.environ["PYTHONUNBUFFERED"] = "1"
-sys.stdout = os.fdopen(sys.stdout.fileno(), "w", buffering=1)
-sys.stderr = os.fdopen(sys.stderr.fileno(), "w", buffering=1)
+def show_help():
+    """Display help information."""
+    help_text = """
+🎵 Audio Transcriber - Made with ❤️ by Matt 🎵
 
-# Supported audio and video file extensions
-MEDIA_EXTS = {
-    '.mp3', '.wav', '.m4a', '.flac', '.aac', '.ogg', '.wma', # audio
-    '.mp4', '.mkv', '.mov', '.avi', '.webm', '.wmv', '.mpeg', '.mpg' # video
-}
+This tool transcribes audio and video files using OpenAI Whisper.
 
-WHISPER_MODELS = { 'tiny', 'base', 'small', 'medium'}
+USAGE:
+  python app.py           Launch GUI mode (default)
+  python app.py --gui     Launch GUI mode explicitly
+  python app.py --cli     Launch CLI mode (command line)
+  python app.py --help    Show this help message
 
-def slow_type(text, delay=0.01):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print() 
+GUI MODE (Default):
+  - Friendly interface perfect for non-technical users
+  - File picker for selecting audio/video files
+  - Model selection with clear descriptions
+  - Progress tracking and status updates
+  - No command line knowledge required
 
-def is_media_file(filename):
-    return any(filename.lower().endswith(ext) for ext in MEDIA_EXTS)
+CLI MODE:
+  - Command line interface (original functionality)
+  - Automatically finds media files in current directory
+  - Interactive model selection
+  - Batch processing of all found files
 
-def display_banner():
-    print()
-    print("=" * 80)
-    print("{:^80}".format("██   ██ ███████ ██      ██       ██████       █████  ███    ███ ██    ██"))
-    print("{:^80}".format("██   ██ ██      ██      ██      ██    ██     ██   ██ ████  ████  ██  ██ "))
-    print("{:^80}".format("███████ █████   ██      ██      ██    ██     ███████ ██ ████ ██   ████  "))
-    print("{:^80}".format("██   ██ ██      ██      ██      ██    ██     ██   ██ ██  ██  ██    ██   "))
-    print("{:^80}".format("██   ██ ███████ ███████ ███████  ██████      ██   ██ ██      ██    ██   "))
-    print()
-    print("{:^80}".format("🎵 AUDIO TRANSCRIPTION TOOL 🎵"))
-    print("{:^80}".format("Made with love for you to transcribe your interviews easily!"))
-    print("{:^80}".format("From Matt ❤️"))
-    print("=" * 80)
-    print()
+SUPPORTED FORMATS:
+  Audio: MP3, WAV, M4A, FLAC, AAC, OGG, WMA
+  Video: MP4, MKV, MOV, AVI, WEBM, WMV, MPEG, MPG
 
-def get_model_choice():
-    while True:
-        model_choice = input(f"Choose Transcription Model {WHISPER_MODELS} (default: base): ").strip().lower()
-        if model_choice == '':
-            model_choice = 'base'
-        if model_choice in WHISPER_MODELS:
-            return model_choice
-        else:
-            print(f"Invalid choice. Please choose from {WHISPER_MODELS}.")
+OUTPUT:
+  - Timestamped transcription files
+  - Saved in 'transcriptions' folder
+  - Format: [00.00s - 05.23s] Transcribed text here...
 
-def find_media_files(search_dir):
-    files = [f for f in os.listdir(search_dir) if os.path.isfile(os.path.join(search_dir, f)) and is_media_file(f)]
-    if not files:
-        print(f"No audio/video files found in: {os.path.abspath(search_dir)}")
-        print("Please place your audio/video files in the same folder as this app.")
-        input("Press Enter to exit...")
-        return []
-    print(f"Found {len(files)} media file(s) in: {os.path.abspath(search_dir)}")
-    for f in files:
-        print(f"  {f}")
-    return files
+Made with love for academic research and interviews! ❤️
+"""
+    print(help_text)
 
-def transcribe_files(files, model, search_dir):
-    for media_file in files:
-        print()
-        print(f"Processing: {media_file}")
-        full_path = os.path.join(search_dir, media_file)
-        transcribe_with_retry(full_path, model=model)
 
 def main():
-    try:
-        if getattr(sys, 'frozen', False):
-            search_dir = os.path.dirname(sys.executable)
-        else:
-            search_dir = os.getcwd()
-
-        display_banner()
-
-        print()
-        print("Model Information:")
-        print("  tiny: Fastest but least accurate")
-        print("  base: Balanced speed and accuracy")
-        print("  small: Slower but more accurate")
-        print("  medium: Slowest but most accurate")
-        print()
-
-        model_choice = get_model_choice()
-        print()
-        files = find_media_files(search_dir)
-        if not files:
-            return
-
-        print()
-        print("Press Enter to start the transcriptions, or Ctrl+C to cancel...")
-        input()
-
-        print(f"Loading transcription model '{model_choice}'...")
-        model = whisper.load_model(model_choice)
-        print("Transcription model loaded successfully.")
-
-        transcribe_files(files, model, search_dir)
-
-        print()
-        print("="*80)
-        print("All transcriptions completed!")
-        print("Check for the *_transcription.txt files in the same folder.")
-        print("="*80)
-        print()
-        input("Press Enter to exit...")
-    except Exception as e:
-        print(f"\nFatal error: {e}", file=sys.stderr)
-        import traceback
-        traceback.print_exc()
-        print("Contact your Matt if you need help.")
-        input("Press Enter to exit...")
-        sys.exit(1)
+    """Main entry point - determines whether to launch GUI or CLI."""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description="Audio Transcriber - GUI and CLI modes available",
+        add_help=False  # We'll handle help ourselves
+    )
+    parser.add_argument('--gui', action='store_true', help='Launch GUI mode (default)')
+    parser.add_argument('--cli', action='store_true', help='Launch CLI mode')
+    parser.add_argument('--help', action='store_true', help='Show help information')
+    
+    args, unknown = parser.parse_known_args()
+    
+    # Handle help
+    if args.help:
+        show_help()
+        return
+    
+    # Determine mode
+    if args.cli:
+        launch_mode = 'cli'
+    else:
+        # Default to GUI, but check if we can import tkinter
+        try:
+            import tkinter
+            launch_mode = 'gui'
+        except ImportError:
+            print("GUI mode not available (tkinter not installed). Falling back to CLI mode.")
+            launch_mode = 'cli'
+    
+    print(f"🎵 Audio Transcriber - Starting in {'GUI' if launch_mode == 'gui' else 'CLI'} mode...")
+    print()
+    
+    # Launch appropriate mode
+    if launch_mode == 'gui':
+        try:
+            from gui_app import main as gui_main
+            gui_main()
+        except ImportError as e:
+            print(f"Error importing GUI components: {e}")
+            print("Falling back to CLI mode...")
+            from cli_app import main as cli_main
+            cli_main()
+        except Exception as e:
+            print(f"Error in GUI mode: {e}")
+            print("Falling back to CLI mode...")
+            from cli_app import main as cli_main
+            cli_main()
+    else:
+        from cli_app import main as cli_main
+        cli_main()
 
 if __name__ == "__main__":
     # Fix for PyInstaller multiprocessing issues
