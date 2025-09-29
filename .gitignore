@@ -16,6 +16,7 @@ dist/
 # Virtual environment
 venv_dissertation_transcriber/
 venv_audio/
+models/
 
 # PyInstaller
 *.spec

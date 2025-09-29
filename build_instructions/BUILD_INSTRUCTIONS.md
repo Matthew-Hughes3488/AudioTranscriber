@@ -27,7 +27,7 @@ Build with GUI as the default interface:
 # Build GUI version
 pyinstaller --onefile --windowed --name "Audio Transcriber GUI" app.py \
   --add-data "/Users/matthewhughes/development/AudioTranscriber/venv_audio/lib/python3.12/site-packages/whisper/assets:whisper/assets" \
-  --add-binary "/bin/ffmpeg:."
+  --add-binary "/opt/homebrew/bin/ffmpeg:."
 ```
 
 ### Option 2: CLI Mode (For Power Users)
@@ -37,7 +37,7 @@ Build with CLI interface only:
 # Build CLI version
 pyinstaller --onefile --name "Audio Transcriber CLI" cli_app.py \
   --add-data "/Users/matthewhughes/development/AudioTranscriber/venv_audio/lib/python3.12/site-packages/whisper/assets:whisper/assets" \
-  --add-binary "/bin/ffmpeg:."
+  --add-binary "/opt/homebrew/bin/ffmpeg:."
 ```
 
 ### Option 3: Universal Build (Both Modes)
@@ -47,7 +47,8 @@ Build with both GUI and CLI support:
 # Build universal version
 pyinstaller --onefile --name "Audio Transcriber" app.py \
   --add-data "/Users/matthewhughes/development/AudioTranscriber/venv_audio/lib/python3.12/site-packages/whisper/assets:whisper/assets" \
-  --add-binary "/bin/ffmpeg:."
+  --add-data "models:models" \
+  --add-binary "/opt/homebrew/bin/ffmpeg:."
 ```
 
 ## Updated Usage for End Users

@@ -92,21 +92,31 @@ class TranscriptionSession:
         self.is_cancelled = False
         
     def load_model(self) -> bool:
-        """Load the Whisper model. Returns True if successful."""
+        """Load the Whisper model from the bundled directory. Returns True if successful."""
         if not WHISPER_AVAILABLE:
             if self.progress_callback:
                 self.progress_callback("Error: Whisper not installed. Please install openai-whisper.")
             return False
-            
+
         try:
             if self.progress_callback:
                 self.progress_callback(f"Loading transcription model '{self.model_name}'...")
-            
-            self.model = whisper.load_model(self.model_name)
-            
+
+            # Check for bundled models in the 'models' directory
+            if getattr(sys, 'frozen', False):  # Running as a PyInstaller bundle
+                base_path = sys._MEIPASS
+            else:  # Running as a script
+                base_path = os.path.dirname(os.path.abspath(__file__))
+
+            model_path = os.path.join(base_path, "models", f"{self.model_name}.pt")
+            if os.path.exists(model_path):
+                self.model = whisper.load_model(model_path)
+            else:
+                raise FileNotFoundError(f"Model '{self.model_name}' not found in bundled models directory.")
+
             if self.progress_callback:
                 self.progress_callback("Transcription model loaded successfully.")
-            
+
             return True
         except Exception as e:
             if self.progress_callback:
