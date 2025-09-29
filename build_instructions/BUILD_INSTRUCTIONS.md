@@ -44,11 +44,11 @@ pyinstaller --onefile --name "Audio Transcriber CLI" cli_app.py \
 Build with both GUI and CLI support:
 
 ```bash
-# Build universal version
-pyinstaller --onefile --name "Audio Transcriber" app.py \
-  --add-data "/Users/matthewhughes/development/AudioTranscriber/venv_audio/lib/python3.12/site-packages/whisper/assets:whisper/assets" \
+# Build universal version (directory-based)
+pyinstaller --name "Audio Transcriber" app.py \
   --add-data "models:models" \
-  --add-binary "/opt/homebrew/bin/ffmpeg:."
+  --add-binary "/opt/homebrew/bin/ffmpeg:." \
+  --add-data "/Users/matthewhughes/development/AudioTranscriber/venv_audio/lib/python3.12/site-packages/whisper/assets:whisper/assets"
 ```
 
 ## Updated Usage for End Users
@@ -65,6 +65,15 @@ pyinstaller --onefile --name "Audio Transcriber" app.py \
 1. Run with `--cli` flag: `./Audio\ Transcriber --cli`
 2. Or use the dedicated CLI build
 3. Follow the original command-line interface
+
+### Directory-Based Build
+1. Extract the `dist/Audio Transcriber/` directory from the build output.
+2. Navigate to the extracted directory.
+3. Run the application:
+   ```bash
+   ./Audio\ Transcriber
+   ```
+4. Ensure all required files (e.g., `models/`, `ffmpeg`, and Whisper assets) are present in the directory.
 
 ### Help
 Run `./Audio\ Transcriber --help` to see all options
