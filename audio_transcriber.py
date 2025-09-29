@@ -8,14 +8,16 @@ def transcribe_with_retry(file_path, max_retries=3, model=None):
         try:
             transcribe_audio(file_path, model=model)
             print(f"Transcription succeeded for {file_path} on attempt {attempt}")
-            break
+            return  # Ensure function exits after success
         except Exception as e:
             print(f"Attempt {attempt} failed for {file_path}: {e}")
             if attempt == max_retries:
                 print(f"Giving up on {file_path} after {max_retries} attempts.")
 
 def transcribe_audio(file_path, model=None):
-    model = whisper.load_model(model)
+    if model is None:
+        raise ValueError("A valid Whisper model instance must be provided.")
+
     print()
     print("Starting transcription...")
     result = model.transcribe(file_path)
