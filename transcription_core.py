@@ -7,6 +7,26 @@ import os
 import sys
 from typing import List, Optional, Callable, Dict, Any
 
+
+def setup_ffmpeg_path():
+    """Set up ffmpeg path for PyInstaller bundle."""
+    if getattr(sys, 'frozen', False):  # Running in a PyInstaller bundle
+        bundled_ffmpeg = os.path.join(sys._MEIPASS, "ffmpeg")
+        if os.path.exists(bundled_ffmpeg):
+            # Set environment variable for ffmpeg-python
+            os.environ["FFMPEG_BINARY"] = bundled_ffmpeg
+            
+            # Add to PATH for subprocess calls
+            ffmpeg_dir = os.path.dirname(bundled_ffmpeg)
+            current_path = os.environ.get("PATH", "")
+            if ffmpeg_dir not in current_path:
+                os.environ["PATH"] = ffmpeg_dir + os.pathsep + current_path
+
+
+# Set up ffmpeg path early
+setup_ffmpeg_path()
+
+
 # Import whisper and audio_transcriber only when needed
 try:
     import whisper

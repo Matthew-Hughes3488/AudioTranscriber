@@ -1,5 +1,36 @@
 import os
+import sys
+import subprocess
 
+
+def get_ffmpeg_path():
+    """Get the path to the ffmpeg binary, using bundled version if available."""
+    if getattr(sys, 'frozen', False):  # Running in a PyInstaller bundle
+        bundled_ffmpeg = os.path.join(sys._MEIPASS, "ffmpeg")
+        if os.path.exists(bundled_ffmpeg):
+            return bundled_ffmpeg
+    
+    # Fall back to system ffmpeg
+    return "ffmpeg"
+
+
+def setup_ffmpeg_for_whisper():
+    """Configure ffmpeg path for Whisper to use the bundled version."""
+    ffmpeg_path = get_ffmpeg_path()
+    
+    # Set environment variable for ffmpeg-python to use our bundled version
+    os.environ["FFMPEG_BINARY"] = ffmpeg_path
+    
+    # Also add the directory to PATH so subprocess calls can find it
+    if getattr(sys, 'frozen', False):
+        ffmpeg_dir = os.path.dirname(ffmpeg_path)
+        current_path = os.environ.get("PATH", "")
+        if ffmpeg_dir not in current_path:
+            os.environ["PATH"] = ffmpeg_dir + os.pathsep + current_path
+
+
+# Call this early to set up ffmpeg for the entire application
+setup_ffmpeg_for_whisper()
 
 
 def transcribe_with_retry(file_path, max_retries=3, model=None):

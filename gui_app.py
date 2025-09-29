@@ -80,7 +80,7 @@ class AudioTranscriberGUI:
         # Personal message
         message_label = ttk.Label(
             self.welcome_frame,
-            text="Made with love for you... From Matthew ❤️",
+            text="Made with love for you... From Matt ❤️",
             font=("Arial", 16, "italic"),
             foreground="#666666"
         )
