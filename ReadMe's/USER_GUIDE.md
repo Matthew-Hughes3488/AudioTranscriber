@@ -82,7 +82,6 @@ Your transcripts will be saved as `.txt` files in a new `transcriptions` folder,
 | **Tiny** | ⚡⚡⚡⚡ | ⭐⭐ | Quick drafts, rough transcripts |
 | **Base** | ⚡⚡⚡ | ⭐⭐⭐ | **Most people (RECOMMENDED)** |
 | **Small** | ⚡⚡ | ⭐⭐⭐⭐ | Higher quality needed |
-| **Medium** | ⚡ | ⭐⭐⭐⭐⭐ | Best quality, longer wait |
 
 💡 **Start with "Base"** - it's the sweet spot for most academic work!
 

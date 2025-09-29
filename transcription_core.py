@@ -46,14 +46,13 @@ MEDIA_EXTS = {
     '.mp4', '.mkv', '.mov', '.avi', '.webm', '.wmv', '.mpeg', '.mpg'  # video
 }
 
-WHISPER_MODELS = {'tiny', 'base', 'small', 'medium'}
+WHISPER_MODELS = {'tiny', 'base', 'small'}
 
 # Model descriptions for user-friendly display
 MODEL_DESCRIPTIONS = {
     'tiny': 'Fastest but least accurate',
     'base': 'Balanced speed and accuracy (recommended)',
-    'small': 'Slower but more accurate',
-    'medium': 'Slowest but most accurate'
+    'small': 'Slower but more accurate'
 }
 
 
