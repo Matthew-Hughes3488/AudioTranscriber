@@ -1,3 +1,5 @@
 openai-whisper
 pyinstaller
 ffmpeg-python
+# Note: GUI requires tkinter, which is included with most Python installations
+# If tkinter is not available, the app will automatically fall back to CLI mode
